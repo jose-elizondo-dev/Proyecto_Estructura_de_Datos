@@ -186,10 +186,14 @@ string cargarLetra(string ruta){
     string textoCompleto = " ";      // se acumula todo el texto
 
     if (archivo.is_open()){
-        
+        while (getline(archivo, linea)) {
+            textoCompleto += linea + "\n";
+        }
+        archivo.close();
+    }else{
+        textoCompleto =  "Letra no disponible";
     }
-    
-
+    return textoCompleto;
 }
 
 
