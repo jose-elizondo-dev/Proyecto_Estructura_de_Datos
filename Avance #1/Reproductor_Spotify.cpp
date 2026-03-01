@@ -1,17 +1,9 @@
 #include <iostream>
 #include <fstream>
+#include <sstream> //para separar textos 
+#include <cctype> //validar numeros
 using namespace std;
-
-struct Cancion
-{
-    string nombreCancion;
-    string compositor;
-    string duracion;
-    string letra;
-
-    Cancion *siguiente;
-    Cancion *anterior;
-};
+#include "reproductor.h"
 
 Cancion* cabeza = nullptr;  // inicio de la lista
 Cancion* actual = nullptr;  // canción en reproducción
@@ -24,7 +16,7 @@ bool listaVacia() {
 bool camposValidos(string nombre, string compositor, string duracion) {
 
     if (nombre.empty() || compositor.empty() || duracion.empty()) {
-        cout << "Error: No se permiten campos vacíos.\n";
+        cout << "Error: No se permiten campos vacios.\n";
         return false;
     }
     return true;
@@ -64,12 +56,12 @@ void agregarCancion(string nombre, string comp, string dur, string rutaLetra) {
     if (!camposValidos(nombre, comp, dur)) return;
 
     if (!duracionValida(dur)) {
-        cout << "Duración inválida.\n";
+        cout << "Duracion invalida.\n";
         return;
     }
 
     if (existeCancion(nombre)) {
-        cout << "La canción ya existe.\n";
+        cout << "La cancion ya existe.\n";
         return;
     }
 
@@ -95,7 +87,9 @@ void agregarCancion(string nombre, string comp, string dur, string rutaLetra) {
         cabeza->anterior = nueva;
     }
 
-    cout << "Canción agregada correctamente.\n";
+    guardarCancionArchivo(nombre, comp, dur, rutaLetra); //guardar en archivo
+
+    cout << "Cancion agregada correctamente.\n";
 
 }
 
@@ -123,7 +117,7 @@ void mostrarPlaylist() {
 bool buscarCancion(string nombre) {
 
     if (listaVacia()) {
-        cout << "Playlist vacía.\n";
+        cout << "Playlist vacia.\n";
         return false;
     }
 
@@ -132,13 +126,13 @@ bool buscarCancion(string nombre) {
     do {
         if (temp->nombreCancion == nombre) {
             actual = temp;
-            cout << "Canción encontrada.\n";
+            cout << "Cancion encontrada.\n";
             return true;
         }
         temp = temp->siguiente;
     } while (temp != cabeza);
 
-    cout << "Canción no encontrada.\n";
+    cout << "Cancion no encontrada.\n";
     return false;
 }
 
@@ -169,7 +163,7 @@ void eliminarCancion(string nombre) {
             }
 
             delete temp;
-            cout << "Canción eliminada.\n";
+            cout << "Cancion eliminada.\n";
             return;
         }
 
@@ -183,49 +177,148 @@ string cargarLetra(string ruta){
 
     ifstream archivo(ruta);            //abrir el archivo
     string linea;                     //guarda la linea que se va leyendo 
-    string textoCompleto = " ";      // se acumula todo el texto
+    string textoCompleto = "";      // se acumula todo el texto
 
-    if (archivo.is_open()){
-        while (getline(archivo, linea)) {
+    if (archivo.is_open()){ //veriifca que se abra bien
+        while (getline(archivo, linea)) { //leer linea por linea
             textoCompleto += linea + "\n";
         }
-        archivo.close();
+        archivo.close(); 
     }else{
         textoCompleto =  "Letra no disponible";
     }
     return textoCompleto;
 }
+void guardarCancionArchivo(string nombre, string comp, string dur, string rutaLetra) {
 
+    ofstream archivo("canciones.txt", ios::app);
 
+    if (archivo.is_open()) {
+        archivo << nombre << "|"
+                << comp << "|"
+                << dur << "|"
+                << rutaLetra << endl;
+
+        archivo.close();
+    } else {
+        cout << "Error al guardar la canción en archivo.\n";
+    }
+}
+
+void cargarCancionesDesdeArchivo() {
+
+    ifstream archivo("canciones.txt");
+
+    if (!archivo.is_open())
+        return;
+
+    string linea;
+
+    while (getline(archivo, linea)) {
+
+        string nombre, comp, dur, ruta;
+        stringstream ss(linea);
+
+        getline(ss, nombre, '|');
+        getline(ss, comp, '|');
+        getline(ss, dur, '|');
+        getline(ss, ruta, '|');
+
+        Cancion* nueva = new Cancion;
+        nueva->nombreCancion = nombre;
+        nueva->compositor = comp;
+        nueva->duracion = dur;
+        nueva->letra = cargarLetra(ruta);
+
+        if (cabeza == nullptr) {
+            cabeza = nueva;
+            nueva->siguiente = nueva;
+            nueva->anterior = nueva;
+            actual = nueva;
+        } else {
+            Cancion* ultimo = cabeza->anterior;
+
+            ultimo->siguiente = nueva;
+            nueva->anterior = ultimo;
+
+            nueva->siguiente = cabeza;
+            cabeza->anterior = nueva;
+        }
+    }
+
+    archivo.close();
+}
+void reproducirActual() {
+
+    if (listaVacia()) {
+        cout << "No hay canciones en la playlist.\n";
+        return;
+    }
+
+    cout << "\n=== REPRODUCIENDO ===\n";
+    cout << "Nombre: " << actual->nombreCancion << endl;
+    cout << "Compositor: " << actual->compositor << endl;
+    cout << "Duracion: " << actual->duracion << endl;
+
+    if (!actual->letra.empty()) {
+        cout << "\nFragmento de la letra:\n";
+        cout << actual->letra.substr(0, 100) << "...\n";  
+    }
+}
+
+void siguienteCancion() {
+
+    if (listaVacia()) {
+        cout << "No hay canciones en la playlist.\n";
+        return;
+    }
+
+    actual = actual->siguiente;
+    cout << "Pasando a la siguiente cancion...\n";
+    reproducirActual();
+}
+
+void anteriorCancion() {
+
+    if (listaVacia()) {
+        cout << "No hay canciones en la playlist.\n";
+        return;
+    }
+
+    actual = actual->anterior;
+    cout << "Regresando a la cancion anterior...\n";
+    reproducirActual();
+}
 int main() {
 
     int opcion;
     string nombre, compositor, duracion, ruta;
+    cargarCancionesDesdeArchivo();
 
     do {
         cout << "\n====== REPRODUCTOR DE MUSICA ======\n";
-        cout << "1. Agregar canción\n";
+        cout << "1. Agregar cancion\n";
         cout << "2. Mostrar playlist\n";
-        cout << "3. Reproducir canción actual\n";
-        cout << "4. Siguiente canción\n";
-        cout << "5. Canción anterior\n";
-        cout << "6. Buscar canción por nombre\n";
-        cout << "7. Eliminar canción\n";
+        cout << "3. Reproducir cancion actual\n";
+        cout << "4. Siguiente cancion\n";
+        cout << "5. Cancion anterior\n";
+        cout << "6. Buscar cancion por nombre\n";
+        cout << "7. Eliminar cancion\n";
         cout << "8. Salir\n";
-        cout << "Seleccione una opción: ";
+        cout << "Seleccione una opcion: ";
         cin >> opcion;
         cin.ignore();
 
         switch (opcion) {
 
         case 1:
-            cout << "Nombre de la canción: ";
+            cout << "Nombre de la cancion: ";
             getline(cin, nombre);
 
             cout << "Compositor: ";
             getline(cin, compositor);
 
-            cout << "Duración (mm:ss): ";
+            cout << "Duracion (mm:ss): ";
             getline(cin, duracion);
 
             cout << "Ruta del archivo de letra: ";
@@ -239,25 +332,25 @@ int main() {
             break;
 
         case 3:
-            //usar para la reproduccion y la navegacion
+            reproducirActual(); 
             break;
 
         case 4:
-            //usar para la reproduccion y la navegacion
+            siguienteCancion();
             break;
 
         case 5:
-            //usar para la reproduccion y la navegacion
+            anteriorCancion();
             break;
 
         case 6:
-            cout << "Nombre de la canción a buscar: ";
+            cout << "Nombre de la cancion a buscar: ";
             getline(cin, nombre);
             buscarCancion(nombre);
             break;
 
         case 7:
-            cout << "Nombre de la canción a eliminar: ";
+            cout << "Nombre de la cancion a eliminar: ";
             getline(cin, nombre);
 
             char confirmacion;
@@ -269,7 +362,7 @@ int main() {
                 eliminarCancion(nombre);
             }
             else {
-                cout << "Eliminación cancelada.\n";
+                cout << "Eliminacion cancelada.\n";
             }
             break;
 
@@ -278,7 +371,7 @@ int main() {
             break;
 
         default:
-            cout << "Opción inválida.\n";
+            cout << "Opcion invalida.\n";
         }
 
     } while (opcion != 8);
