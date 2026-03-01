@@ -174,13 +174,12 @@ void eliminarCancion(string nombre) {
 }
 
 string cargarLetra(string ruta){
-
     ifstream archivo(ruta);            //abrir el archivo
     string linea;                     //guarda la linea que se va leyendo 
     string textoCompleto = "";      // se acumula todo el texto
 
-    if (archivo.is_open()){ //veriifca que se abra bien
-        while (getline(archivo, linea)) { //leer linea por linea
+    if(archivo.is_open()){ //veriifca que se abra bien
+        while(getline(archivo, linea)){ //leer linea por linea
             textoCompleto += linea + "\n";
         }
         archivo.close(); 
@@ -189,38 +188,35 @@ string cargarLetra(string ruta){
     }
     return textoCompleto;
 }
-void guardarCancionArchivo(string nombre, string comp, string dur, string rutaLetra) {
-
-    ofstream archivo("canciones.txt", ios::app);
-
-    if (archivo.is_open()) {
+void guardarCancionArchivo(string nombre, string comp, string dur, string rutaLetra){
+   //crea el archivo
+    ofstream archivo("canciones.txt", ios::app); //ios::app agrega al final sin necesidad de borrar
+    if (archivo.is_open()){
         archivo << nombre << "|"
                 << comp << "|"
                 << dur << "|"
                 << rutaLetra << endl;
 
         archivo.close();
-    } else {
+    }else{
         cout << "Error al guardar la canción en archivo.\n";
     }
 }
 
-void cargarCancionesDesdeArchivo() {
-
-    ifstream archivo("canciones.txt");
+void cargarCancionesDesdeArchivo(){
+    ifstream archivo("canciones.txt"); //abre el archivo para leer
 
     if (!archivo.is_open())
         return;
-
     string linea;
 
-    while (getline(archivo, linea)) {
+    while(getline(archivo, linea)){ //lee cada linea
 
         string nombre, comp, dur, ruta;
-        stringstream ss(linea);
-
+        stringstream ss(linea); // Convertir la línea en un "stream" para separar por '|'
+   
         getline(ss, nombre, '|');
-        getline(ss, comp, '|');
+        getline(ss, comp, '|'); 
         getline(ss, dur, '|');
         getline(ss, ruta, '|');
 
@@ -230,12 +226,12 @@ void cargarCancionesDesdeArchivo() {
         nueva->duracion = dur;
         nueva->letra = cargarLetra(ruta);
 
-        if (cabeza == nullptr) {
-            cabeza = nueva;
-            nueva->siguiente = nueva;
-            nueva->anterior = nueva;
+        if(cabeza == nullptr){   //si la lista esta vacia
+            cabeza = nueva;    
+            nueva->siguiente = nueva; 
+            nueva->anterior = nueva; 
             actual = nueva;
-        } else {
+        }else{
             Cancion* ultimo = cabeza->anterior;
 
             ultimo->siguiente = nueva;
