@@ -1,0 +1,20 @@
+Instrucciones para guardar y agregar canciones:
+
+1- Si se quiere agregar una letra de cancion nueva, se debe copiar y pegar la letra de la cancion
+en un archivo de texto (.txt) en la misma carpeta donde se encuentra el ejecutable (.exe) es decir
+en la carpeta Avance #1 (En caso de no agregar nuevas letras de canciones, se pueden utilizar las
+canciones previamente guardadas en la carpeta).
+
+2- A la hora de ejecutar el codigo, cuando se desea agregar una cancion a la playlist, 
+se va a requerir que se indique el nombre y extension del archivo
+de letra, solamente es necesario poner el nombre y extension, 
+no hace falta la ruta completa ya que esta pensado para 
+facilitar el proceso y que el programa pueda encontrar todas las letras de canciones en la misma carpeta.
+
+
+Nota: Si el punto #1 se realiza de manera correcta, el punto #2 deberia funcionar con normalidad.
+
+
+3- El programa guarda un archivo con las canciones añadidas a la playlist en la carpeta Avance #1 con el nombre
+canciones.txt, este archivo no se borra al finalizar la ejecucion del programa para que al ejecutar
+de nuevo el programa no se pierda la playlist que se tenia anteriormente

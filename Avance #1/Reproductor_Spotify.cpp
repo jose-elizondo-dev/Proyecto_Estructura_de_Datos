@@ -317,7 +317,7 @@ int main() {
             cout << "Duracion (mm:ss): ";
             getline(cin, duracion);
 
-            cout << "Ruta del archivo de letra: ";
+            cout << "Nombre y extension del archivo de letra: ";
             getline(cin, ruta);
 
             agregarCancion(nombre, compositor, duracion, ruta);
