@@ -30,5 +30,5 @@ void cargarCancionesDesdeArchivo();
 void reproducirActual();
 void siguienteCancion();
 void anteriorCancion();
-
+void menuReproductor();
 #endif
