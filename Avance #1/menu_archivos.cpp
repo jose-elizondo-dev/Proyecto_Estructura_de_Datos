@@ -4,7 +4,7 @@ using namespace std;
 #include "arbol.h"
 
 void menuArchivos(){
-    int op;
+    int opcion;
     string nombre;
 
     do{
@@ -20,14 +20,14 @@ void menuArchivos(){
         cout << "Seleccione una opcion: ";
 
         //validar entrada
-        if(!(cin>>op)){
+        if(!(cin>>opcion)){
             cin.clear();
             cin.ignore(1000, '\n');
             cout<< "Error: Por Favor ingrese un numero valido.\n";
             continue;
         }cin.ignore();
 
-        switch(op){
+        switch(opcion){
         case 1:
             cout <<"Nombre de la carpeta: ";
             getline(cin,nombre);
@@ -43,12 +43,17 @@ void menuArchivos(){
         break;
 
         case 5:
+        cout<< "Nombre de la carpeta a la que desea entrar: ";
+        getline(cin, nombre);
+        entrarCarpeta(nombre);
         break;
 
         case 6:
+        volver();
         break;
 
         case 7:
+        mostrarRuta();
         break;
 
         case 0:
@@ -59,5 +64,5 @@ void menuArchivos(){
             cout << "Error: Opcion invalida.\n";
         }
     }
-    while(op !=0);
+    while(opcion !=0);
 }
