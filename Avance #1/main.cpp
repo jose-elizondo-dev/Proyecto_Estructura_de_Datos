@@ -1,12 +1,17 @@
 #include <iostream>
 using namespace std;
 #include "reproductor.h"
+#include "arbol.h"
+
+void menuReproductor();
+void menuArchivos();
 
 int main() {
     int opcion;
     do {
         cout << "\n====== MENU PRINCIPAL ======\n";
         cout << "1. Reproductor de musica\n";
+        cout << "2. Gestor de archivos\n";
         cout << "0. Salir\n";
         cout << "Seleccione una opcion: ";
 
@@ -20,11 +25,14 @@ int main() {
         cin.ignore();
         switch(opcion) {
             case 1:
-                menuReproductor(); //llama al menu de reproductor
+                menuReproductor();  //llama al menu de reproductor
+                break;
+            case 2:
+                menuArchivos();
                 break;
             case 0:
-                cout << "Saliendo del programa...\n";
-                break;
+            cout<< "Saliendo......\n";
+            break;
             default:
                 cout << "Error: Opcion invalida.\n";
         }
