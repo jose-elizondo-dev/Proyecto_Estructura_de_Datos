@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 using namespace std;
-#include "arbol.h"
+#include "gestor.h"
 
 //navegacion 
 string rutaActual = "/raiz";

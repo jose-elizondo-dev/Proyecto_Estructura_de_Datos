@@ -1,7 +1,7 @@
 #include <iostream>
 using namespace std;
 #include "reproductor.h"
-#include "arbol.h"
+#include "gestor.h"
 
 void menuReproductor();
 void menuArchivos();

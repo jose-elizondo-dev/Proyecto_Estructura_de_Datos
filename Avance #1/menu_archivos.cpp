@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 using namespace std;
-#include "arbol.h"
+#include "gestor.h"
 
 void menuArchivos(){
     int opcion;

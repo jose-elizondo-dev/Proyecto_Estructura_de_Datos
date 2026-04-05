@@ -1,5 +1,5 @@
-#ifndef ARBOL_H
-#define ARBOL_H
+#ifndef GESTOR_H
+#define GESTOR_H
 #include <string>
 using namespace std;
 
